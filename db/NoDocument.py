@@ -1,0 +1,2 @@
+class NoDocument(Exception):
+    pass
