@@ -60,6 +60,9 @@ class ScenarioFormatter:
         data_frame = np.array(one_hot_encoded)
         return data_frame
 
+    def get_label(self):
+        return self._labels.keys()
+
 
 if __name__ == '__main__':
     data = {'correction_action': 'UNKNOWN',

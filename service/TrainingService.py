@@ -18,7 +18,7 @@ class TrainingService:
 
 if __name__ == '__main__':
     trainingService = TrainingService()
-    # value = trainingService.generate_new_model()
+    value = trainingService.generate_new_model()
 
     """
     from db.NoDocument import NoDocument

@@ -8,7 +8,7 @@ class PredictionService:
 
     def __init__(self):
         self._classifierService = ClassifierService()
-        self._predictionProducer = PredictionProducer()
+        # self._predictionProducer = PredictionProducer()
 
     def make_a_prediction(self, classifier_id: str, scenario: PredictionScenario):
         try:
@@ -18,4 +18,14 @@ class PredictionService:
             return
 
         prediction = classifier.model.predict(scenario)
-        self._predictionProducer.send_prediction(prediction)
+        return prediction
+        # self._predictionProducer.send_prediction(prediction)
+
+
+if __name__ == '__main__':
+    prediction_service = PredictionService()
+    from service.DatasetService import DatasetService
+    dataset_service = DatasetService()
+    dataset = dataset_service.get_dataset()
+
+    print(prediction_service.make_a_prediction("5e99bb94e8e458b76926df19", dataset[0]))

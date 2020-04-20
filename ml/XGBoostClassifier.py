@@ -14,6 +14,7 @@ class XGBoostClassifier:
         self.accuracy = None
         
     def train(self, dataset: [TrainingScenario]) -> float:
+        (train_labels, train_rows), (test_labels, test_rows) = self._prepare_data_for_training(dataset)
         self._trained_model = xgb.XGBClassifier(
             learning_rate=0.8,
             n_estimators=140,
@@ -26,13 +27,9 @@ class XGBoostClassifier:
             objective='multi:softprob',
             reg_lambda=1,
             reg_alpha=0
-        )
-        (train_labels, train_rows), (test_labels, test_rows) = self._prepare_data_for_training(dataset)
-
-        self._trained_model.fit(
+        ).fit(
             train_rows,
             train_labels,
-            # eval_set=[(test_rows, test_labels)],
             eval_metric='auc'
         )
         test_predictions = self._trained_model.predict(test_rows)
@@ -70,10 +67,9 @@ class XGBoostClassifier:
         return (y_train, x_train), (y_test, x_test)
 
     def predict(self, scenario: PredictionScenario):
-        formatted_scenario = self._scenario_formatter.format_entry(
+        formatted_scenario = np.array([self._scenario_formatter.format_entry(
             scenario.trace,
             scenario.fail_step_key_word
-        )
-        prediction = self._trained_model.predict_proba(formatted_scenario).tolist()
-        # Format prediction
-        return prediction
+        )])
+        prediction = self._trained_model.predict_proba(formatted_scenario)[0]
+        return [(label, prediction) for label, prediction in zip(self._scenario_formatter.get_label(), prediction)]
