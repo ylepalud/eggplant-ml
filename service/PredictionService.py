@@ -8,9 +8,10 @@ class PredictionService:
 
     def __init__(self):
         self._classifierService = ClassifierService()
-        # self._predictionProducer = PredictionProducer()
+        self._predictionProducer = PredictionProducer()
 
     def make_a_prediction(self, classifier_id: str, scenario: PredictionScenario):
+        print("Start prediction")
         try:
             classifier = self._classifierService.get_model(classifier_id)
         except NoDocument as e:
@@ -18,8 +19,11 @@ class PredictionService:
             return
 
         prediction = classifier.model.predict(scenario)
+        prediction = [{"label": str(label[0]), "accuracy": str(label[1])} for label in prediction]
+        prediction = {"prediction": prediction}
+        self._predictionProducer.send_prediction(prediction)
+        print("End prediction")
         return prediction
-        # self._predictionProducer.send_prediction(prediction)
 
 
 if __name__ == '__main__':

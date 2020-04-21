@@ -1,4 +1,4 @@
-from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, SCENARIO_QUEUE
+from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, EGGPLANT_SUBMIT_PREDICTION_QUEUE, EGGPLANT_SUBMIT_PREDICTION_EXCHANGE, PREDICTION_ROUTING_KEY
 import json
 from model.PredictionScenario import PredictionScenario
 import pika
@@ -17,24 +17,39 @@ class ScenarioConsumer:
         )
 
         self._channel = self._connection.channel()
+
         self._channel.queue_declare(
-            queue=SCENARIO_QUEUE,
+            queue=EGGPLANT_SUBMIT_PREDICTION_QUEUE,
             durable=True
         )
 
+        self._channel.exchange_declare(
+            exchange=EGGPLANT_SUBMIT_PREDICTION_EXCHANGE,
+            exchange_type="topic",
+            durable=True
+        )
+
+        self._channel.queue_bind(
+            exchange=EGGPLANT_SUBMIT_PREDICTION_EXCHANGE,
+            queue=EGGPLANT_SUBMIT_PREDICTION_QUEUE,
+            routing_key=PREDICTION_ROUTING_KEY
+        )
+
         self._channel.basic_consume(
-            queue=SCENARIO_QUEUE,
+            queue=EGGPLANT_SUBMIT_PREDICTION_QUEUE,
             on_message_callback=self.consume_callback,
             auto_ack=True
         )
 
     def consume_callback(self, ch, method, properties, body):
-        json_data = json.loads(body.decode("utf-8"))
+        try:
+            json_data = json.loads(body.decode("utf-8"))
+        except json.decoder.JSONDecodeError as e:
+            print("Invalid Json input")
+            return
+        classifier_id = json_data["classifierId"]
         prediction_scenario = PredictionScenario.from_json(json_data)
-        print("New prediction to submit")
-        print(prediction_scenario)
-        print()
-        self._trigger_function(prediction_scenario)
+        print(self._trigger_function(classifier_id, prediction_scenario))
 
     def start(self):
         self._channel.start_consuming()

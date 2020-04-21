@@ -1,4 +1,4 @@
-from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, PREDICTION_QUEUE
+from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, PREDICTION_QUEUE, PREDICTION_EXCHANGE
 import pika
 import json
 
@@ -14,6 +14,13 @@ class PredictionProducer:
             )
         )
         self._channel = self._connection.channel()
+
+        self._channel.exchange_declare(
+            exchange=PREDICTION_EXCHANGE,
+            exchange_type="fanout",
+            durable=True
+        )
+
         self._channel.queue_declare(
             queue=PREDICTION_QUEUE,
             durable=True
