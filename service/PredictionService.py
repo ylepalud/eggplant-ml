@@ -20,7 +20,12 @@ class PredictionService:
 
         prediction = classifier.model.predict(scenario)
         prediction = [{"label": str(label[0]), "accuracy": str(label[1])} for label in prediction]
-        prediction = {"prediction": prediction}
+        prediction = {
+            "prediction": prediction,
+            "classifierId": classifier_id,
+            "zucchiniId": scenario.zucchini_id,
+            "scenarioId": scenario.id
+        }
         self._predictionProducer.send_prediction(prediction)
         print("End prediction")
         return prediction
