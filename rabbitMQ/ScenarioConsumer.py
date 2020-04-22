@@ -49,7 +49,7 @@ class ScenarioConsumer:
             return
         classifier_id = json_data["classifierId"]
         prediction_scenario = PredictionScenario.from_json(json_data)
-        print(self._trigger_function(classifier_id, prediction_scenario))
+        self._trigger_function(classifier_id, prediction_scenario)
 
     def start(self):
         self._channel.start_consuming()

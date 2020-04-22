@@ -6,7 +6,7 @@ load_dotenv()
 DB_URL = os.getenv("DB_URL")
 DB_PORT = int(os.getenv("DB_PORT"))
 
-DATABASE_NAME = "test"
+DATABASE_NAME = "eggplant"
 CLASSIFIER_COLLECTION = "classifier"
 DATASET_COLLECTION = "dataset"
 TEST_COLLECTION = "test_collection"
