@@ -28,7 +28,7 @@ class PredictionProducer:
 
     def send_prediction(self, prediction):
         self._channel.basic_publish(
-            exchange='',
+            exchange=PREDICTION_EXCHANGE,
             routing_key=PREDICTION_QUEUE,
             body=json.dumps(prediction)
         )
