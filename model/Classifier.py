@@ -10,6 +10,7 @@ class Classifier:
                  created_at,
                  interesting_words,
                  good_prediction,
+                 total_labeled_prediction,
                  total_prediction,
                  active_classifier,
                  model
@@ -20,6 +21,7 @@ class Classifier:
         self.created_at = created_at
         self.interesting_words = interesting_words
         self.good_prediction = good_prediction
+        self.total_labeled_prediction = total_labeled_prediction
         self.total_prediction = total_prediction
         self.active_classifier = active_classifier
         self.model = pickle.loads(model)
@@ -33,6 +35,7 @@ class Classifier:
             json["createdAd"],
             json["interestingWords"],
             json["goodPrediction"],
+            json["totalLabeledPrediction"],
             json["totalPrediction"],
             json["activeClassifier"],
             json["model"]
@@ -47,6 +50,7 @@ class Classifier:
             params.createdAd,
             params.interestingWords,
             params.goodPrediction,
+            params.totalLabeledPrediction,
             params.totalPrediction,
             params.activeClassifier,
             params.model
