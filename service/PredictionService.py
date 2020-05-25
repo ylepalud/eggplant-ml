@@ -24,7 +24,9 @@ class PredictionService:
             "prediction": prediction,
             "classifierId": classifier_id,
             "zucchiniId": scenario.zucchini_id,
-            "scenarioId": scenario.id
+            "scenarioId": scenario.id,
+            "scenarioKey": scenario.scenario_key,
+            "testRunId": scenario.test_run_id
         }
         self._predictionProducer.send_prediction(prediction)
         print("End prediction")
