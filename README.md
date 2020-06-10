@@ -11,3 +11,7 @@ RABBIT_MQ_HOST=
 RABBIT_MQ_PORT=
 RABBIT_MQ_SERVER=
 
+# Build and run with docker
+docker build -t eggplant .
+docker run -it -env-file .env --name moussaka eggplant
+

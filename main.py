@@ -13,4 +13,7 @@ def start_application():
 
 
 if __name__ == '__main__':
+    with open("banner.txt", "r") as banner:
+        print(banner.read())
     start_application()
+    print("Application started, waiting for scenarii")
