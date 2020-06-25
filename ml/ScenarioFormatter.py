@@ -13,7 +13,7 @@ class ScenarioFormatter:
     track_http_status = ["200", "301", "302", "304", "400", "401", "403", "404", "500", "503", "504"]
     
     def __init__(self, interesting_words: [str], labels: [str]):
-        self._labels = {label: index for index, label in enumerate(labels)}
+        self._labels = labels
         self._interesting_words = interesting_words
 
         self._sequence_one_hot_encoded = [
@@ -61,7 +61,7 @@ class ScenarioFormatter:
         return data_frame
 
     def get_label(self):
-        return self._labels.keys()
+        return self._labels
 
 
 if __name__ == '__main__':
