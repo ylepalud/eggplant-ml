@@ -4,9 +4,7 @@ from model.PredictionScenario import PredictionScenario
 import numpy as np
 from xgboost import XGBClassifier
 import random
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, KFold
-from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import RandomizedSearchCV
 
 
 class XGBoostClassifier:
@@ -14,7 +12,7 @@ class XGBoostClassifier:
     def __init__(self, scenario_formatter: ScenarioFormatter):
         self._scenario_formatter = scenario_formatter
         self._trained_model = None
-        self.accuracy = None
+        self.accuracy = 0
         
     def train(self, dataset: [TrainingScenario]) -> float:
         (train_labels, train_rows), (test_labels, test_rows) = self._prepare_data_for_training(dataset)
@@ -36,35 +34,20 @@ class XGBoostClassifier:
             'max_depth': [3, 4, 5]
         }
 
-        # kfold_5 = KFold(n=len(train_rows), shuffle=True, n_folds=5)
-
         randomized_search_cv = RandomizedSearchCV(
             self._trained_model,
             param_distributions=params,
             random_state=42,
-            n_iter=200,
+            n_iter=10,
             cv=3,
             verbose=1,
             n_jobs=4,
             return_train_score=True
         )
-        randomized_search_cv.fit(train_rows, train_labels)
+        train_accuracy = randomized_search_cv.fit(train_rows, train_labels)
         self._trained_model = randomized_search_cv
-        # randomized_search_cv.cv_results_
-        """
-        self._trained_model.fit(
-            train_rows,
-            train_labels,
-            eval_metric='auc'
-        )
-        test_predictions = self._trained_model.predict(test_rows)
-        good_prediction = sum(
-            [1 for pred, true_label in zip(test_predictions, test_labels) if pred == true_label])
-
-        accuracy = round(good_prediction / len(test_predictions.tolist()), 5) * 100
-        self.accuracy = round(accuracy, 3)
-        return self.accuracy
-        """
+        self.accuracy = train_accuracy.best_score_
+        return train_accuracy.best_score_
 
     def _calculate_accuracy(self, dataset: [TrainingScenario]):
         good_prediction = 0
@@ -75,7 +58,6 @@ class XGBoostClassifier:
                 good_prediction += 1
         return round(good_prediction/total_entry, 4)
 
-        
     def _prepare_data_for_training(self, dataset: [TrainingScenario]):
         row_data = []
         for trainingScenario in dataset:
