@@ -1,21 +1,19 @@
 from ml.ScenarioFormatter import ScenarioFormatter
 from model.TrainingScenario import TrainingScenario
 from model.PredictionScenario import PredictionScenario
+from ml.Classifier import Classifier
 import numpy as np
 from xgboost import XGBClassifier
-import random
 from sklearn.model_selection import RandomizedSearchCV
 
 
-class XGBoostClassifier:
+class XGBoostClassifier(Classifier):
 
     def __init__(self, scenario_formatter: ScenarioFormatter):
-        self._scenario_formatter = scenario_formatter
-        self._trained_model = None
-        self.accuracy = 0
+        super().__init__(scenario_formatter)
         
     def train(self, dataset: [TrainingScenario]) -> float:
-        (train_labels, train_rows), (test_labels, test_rows) = self._prepare_data_for_training(dataset)
+        (train_labels, train_rows), (test_labels, test_rows) = super().prepare_data_for_training(dataset)
 
         self._trained_model = XGBClassifier(
             learning_rate=0.02,
@@ -57,32 +55,6 @@ class XGBoostClassifier:
             if training_scenario.training_label == prediction:
                 good_prediction += 1
         return round(good_prediction/total_entry, 4)
-
-    def _prepare_data_for_training(self, dataset: [TrainingScenario]):
-        row_data = []
-        for trainingScenario in dataset:
-            label = trainingScenario.training_label
-            row = self._scenario_formatter.format_entry(
-                trainingScenario.trace,
-                trainingScenario.fail_step_key_word
-            )
-            row_data.append((label, row))
-
-        random.shuffle(row_data)
-        split_index = int(len(dataset) * 0.8)
-        features = []
-        labels = []
-        for pair in row_data:
-            label, feature = pair[0], pair[1]
-            features.append(feature)
-            labels.append(label)
-
-        x_train = np.array(features[:split_index])
-        x_test = np.array(features[split_index:])
-        y_train = np.array(labels[:split_index])
-        y_test = np.array(labels[split_index:])
-        
-        return (y_train, x_train), (y_test, x_test)
 
     def predict(self, scenario: PredictionScenario):
         formatted_scenario = np.array([self._scenario_formatter.format_entry(
