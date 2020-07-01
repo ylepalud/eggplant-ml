@@ -1,6 +1,7 @@
 from service.DatasetService import DatasetService
 from service.ClassifierService import ClassifierService
-from ml.TrainModel import train_new_model
+from ml.TrainModel import train_xgb_model, train_neural_net_model
+
 from model.Classifier import Classifier
 
 
@@ -12,7 +13,8 @@ class TrainingService:
 
     def generate_new_model(self) -> Classifier:
         dataset = self._datasetService.get_dataset()
-        model = train_new_model(dataset)
+        print(len(dataset))
+        model = train_neural_net_model(dataset)
         return self._classifierService.post_new_model(model)
 
 

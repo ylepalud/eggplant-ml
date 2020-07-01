@@ -1,6 +1,6 @@
-from ml.XGBoostClassifier import XGBoostClassifier
-import pickle
+from ml.TensorflowClassifier import TensorflowClassifier
 import datetime
+import pickle
 
 
 class CreateClassifierParam:
@@ -26,7 +26,10 @@ class CreateClassifierParam:
         self.model = model
 
 
-def create_default_classifier_param(model: XGBoostClassifier):
+def create_default_classifier_param(model: TensorflowClassifier):
+
+    tmp_file_name = "tmp_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
     return CreateClassifierParam(
                  "version",
                  model.accuracy,

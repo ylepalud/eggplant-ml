@@ -13,7 +13,7 @@ class ClassifierService:
         self._cache[model_id] = classifier
         return classifier
 
-    def post_new_model(self, model):
+    def post_new_model(self, model: Classifier):
         classifier = classifierCollection.store_object_in_mongo(model)
         self._cache[classifier.id] = classifier
         return classifier
