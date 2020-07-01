@@ -5,6 +5,7 @@ from ml.Classifier import Classifier
 import numpy as np
 from xgboost import XGBClassifier
 from sklearn.model_selection import RandomizedSearchCV
+import pickle
 
 
 class XGBoostClassifier(Classifier):
@@ -63,3 +64,12 @@ class XGBoostClassifier(Classifier):
         )])
         prediction = self._trained_model.predict_proba(formatted_scenario)[0]
         return [(label, prediction) for label, prediction in zip(self._scenario_formatter.get_label(), prediction)]
+
+    def save(self, path: str):
+        with open(path + '.pickle', 'wb') as file:
+            pickle.dump(self, file)
+
+    @staticmethod
+    def load(path: str):
+        with open(path + '.pickle', 'rb') as file:
+            return pickle.load(file)

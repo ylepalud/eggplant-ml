@@ -43,3 +43,10 @@ class Classifier:
         y_test = np.array(labels[split_index:])
 
         return (y_train, x_train), (y_test, x_test)
+
+    def save(self, path: str):
+        pass
+
+    @staticmethod
+    def load(path: str):
+        pass
