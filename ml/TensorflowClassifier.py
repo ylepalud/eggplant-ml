@@ -55,16 +55,3 @@ class TensorflowClassifier(Classifier):
         predictions = self._trained_model.predict(formatted_scenario)[0]
         labels = self._scenario_formatter.get_label()
         return [(self._index_label_mapper[label], prediction) for label, prediction in zip(labels, predictions)]
-
-    def save(self, path: str):
-        self._trained_model.save(path)
-        with open(path + '.pickle', 'wb') as file:
-            pickle.dump(self._scenario_formatter, file)
-
-    @staticmethod
-    def load(path: str):
-        with open(path + '.pickle', 'rb') as file:
-            loaded_formatter = pickle.load(file)
-        tensorflow_classifier = TensorflowClassifier(loaded_formatter)
-        tensorflow_classifier._trained_model = tf.keras.models.load_model(path)
-        return tensorflow_classifier

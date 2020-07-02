@@ -2,10 +2,10 @@ from dotenv import load_dotenv
 from rabbitMQ.StartPrediction import StartPrediction
 from rabbitMQ.StartTraining import StartTraining
 from threading import Thread
-load_dotenv()
 
 
 def start_application():
+    load_dotenv()
     queues = [StartPrediction, StartTraining]
 
     for queue in queues:
