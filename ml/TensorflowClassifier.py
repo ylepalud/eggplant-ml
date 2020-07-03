@@ -4,7 +4,6 @@ from model.PredictionScenario import PredictionScenario
 from ml.Classifier import Classifier
 import numpy as np
 import tensorflow as tf
-import pickle
 
 
 class TensorflowClassifier(Classifier):
@@ -13,6 +12,7 @@ class TensorflowClassifier(Classifier):
         super().__init__(scenario_formatter)
         self._index_label_mapper = {index: label for index, label in enumerate(scenario_formatter.get_label())}
         self._label_index_mapper = {label: index for index, label in enumerate(scenario_formatter.get_label())}
+        self._feature_size = 0
 
     def train(self, dataset: [TrainingScenario]) -> float:
         (train_labels, train_rows), (test_labels, test_rows) = super().prepare_data_for_training(dataset)
@@ -44,6 +44,7 @@ class TensorflowClassifier(Classifier):
 
         accuracy = history.history['accuracy']
         self.accuracy = accuracy
+        self._scenario_formatter.feature_size = len(test_rows[0])
         return accuracy
 
     def predict(self, scenario: PredictionScenario):
@@ -51,7 +52,7 @@ class TensorflowClassifier(Classifier):
             scenario.trace,
             scenario.fail_step_key_word
         )])
-        formatted_scenario = feature_scenario.reshape((1, len(feature_scenario)))
+        formatted_scenario = feature_scenario.reshape((1, self._scenario_formatter.feature_size))
         predictions = self._trained_model.predict(formatted_scenario)[0]
-        labels = self._scenario_formatter.get_label()
-        return [(self._index_label_mapper[label], prediction) for label, prediction in zip(labels, predictions)]
+
+        return [(self._index_label_mapper[index_label], prediction) for index_label, prediction in enumerate(predictions)]

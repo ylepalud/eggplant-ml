@@ -13,7 +13,6 @@ class TrainingService:
 
     def generate_new_model(self) -> Classifier:
         dataset = self._datasetService.get_dataset()
-        print(len(dataset))
         model = train_neural_net_model(dataset)
         return self._classifierService.post_new_model(model)
 
@@ -21,11 +20,3 @@ class TrainingService:
 if __name__ == '__main__':
     trainingService = TrainingService()
     value = trainingService.generate_new_model()
-
-    """
-    from db.NoDocument import NoDocument
-    try:
-        value = trainingService._classifierService.get_model("5e99bb94e8e458b76926df19")
-    except NoDocument as e:
-        print(e)
-    """

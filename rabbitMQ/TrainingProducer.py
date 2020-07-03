@@ -1,5 +1,5 @@
 from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, TRAINING_QUEUE, TRAINING_EXCHANGE
-from ml.Classifier import Classifier
+from model.Classifier import Classifier
 import pika
 
 

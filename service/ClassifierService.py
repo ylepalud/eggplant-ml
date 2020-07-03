@@ -1,22 +1,37 @@
-import db.AiModelStore as classifierCollection
-from model.Classifier import Classifier
+from ml.TensorflowClassifier import TensorflowClassifier
+import tensorflow as tf
+import pickle
+import os
 
 
 class ClassifierService:
+
     def __init__(self):
-        self._cache = dict()
+        self._base_path = "./storage/"
+        self._model_path = "model"
+        self._formatter_path = "formatter.pickle"
+        self._model = None
 
-    def get_model(self, model_id) -> Classifier:
-        if model_id in self._cache.keys():
-            return self._cache[model_id]
-        classifier = classifierCollection.load_object_from_mongo(model_id)
-        self._cache[model_id] = classifier
-        return classifier
+    def get_model(self) -> TensorflowClassifier:
+        if self._model is None:
+            self._model = self.load_model()
+        return self._model
 
-    def post_new_model(self, model: Classifier):
-        classifier = classifierCollection.store_object_in_mongo(model)
-        self._cache[classifier.id] = classifier
-        return classifier
+    def post_new_model(self, model: TensorflowClassifier):
+        if not os.path.exists(self._base_path):
+            os.makedirs(self._base_path)
+        with open(self._base_path + self._formatter_path, "wb+") as file:
+            pickle.dump(model._scenario_formatter, file)
+        model._trained_model.save(self._base_path + self._model_path)
+        # TODO push training information to rabbitMQ
+
+    def load_model(self):
+        print(os.getcwd())
+        with open(self._base_path + self._formatter_path, 'rb') as file:
+            loaded_formatter = pickle.load(file)
+        tensorflow_classifier = TensorflowClassifier(loaded_formatter)
+        tensorflow_classifier._trained_model = tf.keras.models.load_model(self._base_path + self._model_path)
+        return tensorflow_classifier
 
 
 if __name__ == '__main__':

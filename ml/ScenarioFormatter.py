@@ -15,6 +15,7 @@ class ScenarioFormatter:
     def __init__(self, interesting_words: [str], labels: [str]):
         self._labels = labels
         self._interesting_words = interesting_words
+        self.feature_size = 0
 
         self._sequence_one_hot_encoded = [
             *self.fail_step_key_word,

@@ -13,12 +13,12 @@ class PredictionService:
     def make_a_prediction(self, classifier_id: str, scenario: PredictionScenario):
         print("Start prediction")
         try:
-            classifier = self._classifierService.get_model(classifier_id)
+            classifier = self._classifierService.get_model()
         except NoDocument as e:
             print(e)
             return
 
-        prediction = classifier.model.predict(scenario)
+        prediction = classifier.predict(scenario)
         prediction = [{"label": str(label[0]), "accuracy": str(label[1])} for label in prediction]
         prediction = {
             "prediction": prediction,
