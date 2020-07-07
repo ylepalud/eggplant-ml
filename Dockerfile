@@ -25,6 +25,10 @@ ARG DB_URL
 
 ARG DB_PORT
 
+ARG DB_USERNAME
+
+ARG DB_PASSWORD
+
 RUN python trainModel.py
 
 ENV DB_URL="host.docker.internal" \
