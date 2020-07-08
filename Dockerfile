@@ -29,6 +29,10 @@ ARG DB_USERNAME
 
 ARG DB_PASSWORD
 
+ARG DB_NAME=eggplant
+
+ARG DB_AUTHENTICATION=eggplant
+
 RUN python trainModel.py
 
 ENV DB_URL="host.docker.internal" \
