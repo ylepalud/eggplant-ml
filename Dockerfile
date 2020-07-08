@@ -8,7 +8,11 @@ RUN mkdir /opt/conda/envs/eggplant /opt/conda/pkgs && \
     touch /opt/conda/pkgs/urls.txt && \
     chown eggplant /opt/conda/envs/eggplant /opt/conda/pkgs/urls.txt
 
-RUN mkdir -p /app/storage
+RUN mkdir -p /app
+
+RUN chown -R eggplant:eggplant /app
+
+RUN chmod 755 /app
 
 USER 1000
 
