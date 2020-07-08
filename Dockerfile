@@ -1,6 +1,5 @@
 FROM continuumio/miniconda3:4.7.12
 
-# Get env dependencies
 RUN adduser --disabled-password --gecos "Default user" --uid 1000 eggplant
 
 RUN mkdir /opt/conda/envs/eggplant /opt/conda/pkgs && \
@@ -8,6 +7,8 @@ RUN mkdir /opt/conda/envs/eggplant /opt/conda/pkgs && \
     chmod g+w /opt/conda/pkgs && \
     touch /opt/conda/pkgs/urls.txt && \
     chown eggplant /opt/conda/envs/eggplant /opt/conda/pkgs/urls.txt
+
+RUN mkdir -p /app/storage
 
 USER 1000
 
@@ -29,9 +30,9 @@ ARG DB_USERNAME
 
 ARG DB_PASSWORD
 
-ARG DB_NAME=eggplant
+ARG DB_NAME
 
-ARG DB_AUTHENTICATION=eggplant
+ARG DB_AUTHENTICATION
 
 RUN python trainModel.py
 
