@@ -47,9 +47,9 @@ class ScenarioConsumer:
         except json.decoder.JSONDecodeError as e:
             print("Invalid Json input")
             return
-        classifier_id = json_data["classifierId"]
-        prediction_scenario = PredictionScenario.from_json(json_data)
-        self._trigger_function(classifier_id, prediction_scenario)
+        self._trigger_function(
+            PredictionScenario.from_json(json_data)
+        )
 
     def start(self):
         self._channel.start_consuming()

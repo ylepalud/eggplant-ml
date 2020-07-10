@@ -43,7 +43,7 @@ class TensorflowClassifier(Classifier):
         self._trained_model = model
 
         accuracy = history.history['accuracy']
-        self.accuracy = accuracy
+        self.accuracy = accuracy[-1]
         self._scenario_formatter.feature_size = len(test_rows[0])
         return accuracy
 

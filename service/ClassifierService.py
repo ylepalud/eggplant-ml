@@ -23,7 +23,7 @@ class ClassifierService:
         with open(self._base_path + self._formatter_path, "wb+") as file:
             pickle.dump(model._scenario_formatter, file)
         model._trained_model.save(self._base_path + self._model_path)
-        # TODO push training information to rabbitMQ
+        return model
 
     def load_model(self):
         print(os.getcwd())

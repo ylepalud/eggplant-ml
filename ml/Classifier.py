@@ -3,6 +3,7 @@ from model.TrainingScenario import TrainingScenario
 from model.PredictionScenario import PredictionScenario
 import random
 import numpy as np
+import uuid
 
 
 class Classifier:
@@ -11,6 +12,7 @@ class Classifier:
         self._scenario_formatter = scenario_formatter
         self._trained_model = None
         self.accuracy = 0
+        self.id = str(uuid.uuid4())
 
     def train(self, dataset: [TrainingScenario]) -> float:
         pass

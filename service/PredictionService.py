@@ -10,7 +10,7 @@ class PredictionService:
         self._classifierService = ClassifierService()
         self._predictionProducer = PredictionProducer()
 
-    def make_a_prediction(self, classifier_id: str, scenario: PredictionScenario):
+    def make_a_prediction(self, scenario: PredictionScenario):
         print("Start prediction")
         try:
             classifier = self._classifierService.get_model()
@@ -22,7 +22,7 @@ class PredictionService:
         prediction = [{"label": str(label[0]), "accuracy": str(label[1])} for label in prediction]
         prediction = {
             "prediction": prediction,
-            "classifierId": classifier_id,
+            "classifierId": self._classifierService.get_model().id,
             "zucchiniId": scenario.zucchini_id,
             "scenarioId": scenario.id,
             "scenarioKey": scenario.scenario_key,

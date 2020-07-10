@@ -1,6 +1,7 @@
-from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, TRAINING_QUEUE, TRAINING_EXCHANGE
-from model.Classifier import Classifier
+from rabbitMQ import RABBIT_MQ_HOST, RABBIT_MQ_PORT, RABBIT_MQ_SERVER, TRAINING_QUEUE, TRAINING_EXCHANGE, TRAIN_ROUTING_KEY
+from ml.Classifier import Classifier
 import pika
+import json
 
 
 class TrainingProducer:
@@ -27,11 +28,14 @@ class TrainingProducer:
         )
 
     def send_trained_model(self, model: Classifier):
-        # TODO find a way to publish files
+        classifier_creation_params = dict()
+        classifier_creation_params["version"] = model.id
+        classifier_creation_params["trainingAccuracy"] = model.accuracy
+        classifier_creation_params["interestingWords"] = list()
         self._channel.basic_publish(
             exchange=TRAINING_EXCHANGE,
-            routing_key=TRAINING_QUEUE,
-            body=""
+            routing_key=TRAIN_ROUTING_KEY,
+            body=json.dumps(classifier_creation_params)
         )
 
     def close(self):
