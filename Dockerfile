@@ -26,24 +26,10 @@ COPY . /app
 
 WORKDIR /app
 
-ARG DB_URL
+ARG APPLICATION_PROPERTIES
 
-ARG DB_PORT
-
-ARG DB_USERNAME
-
-ARG DB_PASSWORD
-
-ARG DB_NAME
-
-ARG DB_AUTHENTICATION
+COPY ${APPLICATION_PROPERTIES} .env
 
 RUN python trainModel.py
-
-ENV DB_URL="host.docker.internal" \
-    DB_PORT=27017 \
-    RABBIT_MQ_HOST="host.docker.internal" \
-    RABBIT_MQ_PORT=5672 \
-    RABBIT_MQ_SERVER="rabbitmq"
 
 CMD python predictionLoop.py
