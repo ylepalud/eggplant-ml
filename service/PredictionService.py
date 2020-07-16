@@ -1,6 +1,9 @@
 from service.ClassifierService import ClassifierService
 from model.PredictionScenario import PredictionScenario
 from rabbitMQ.PredictionProducer import PredictionProducer
+
+from rabbitMQ.TrainingProducer import TrainingProducer
+
 from db.NoDocument import NoDocument
 
 
@@ -9,6 +12,12 @@ class PredictionService:
     def __init__(self):
         self._classifierService = ClassifierService()
         self._predictionProducer = PredictionProducer()
+        self._init_classifier_information()
+
+    def _init_classifier_information(self):
+        training_producer = TrainingProducer()
+        training_producer.send_trained_model(self._classifierService.get_model())
+        training_producer.close()
 
     def make_a_prediction(self, scenario: PredictionScenario):
         print("Start prediction")
